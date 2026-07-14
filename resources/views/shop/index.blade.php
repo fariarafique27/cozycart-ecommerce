@@ -7,5 +7,23 @@
                 @include('components.product-card', ['product' => $product])
             @endforeach
         </div>
+    <!-- {{ $products->links() }} Laravel creates:
+        Previous , Next , Page numbers , Current page highlight , Ellipsis (...) when there are many pages
+        Laravel generates the HTML automatically.For example, it generates something similar to:
+            <nav>
+                <a href="/products?page=1">Previous</a>
+                <a href="/products?page=1">1</a>
+                <a href="/products?page=2" class="active">2</a>
+                ...
+                <a href="/products?page=42">42</a>
+                <a href="/products?page=3">Next</a>
+            </nav>
+            You didn't write any of this HTML. -->
+        <div class="mt-12 flex justify-center">
+            {{ $products->links() }}
+        </div>
+
     </div>
 </x-layout>
+
+
