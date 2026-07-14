@@ -8,6 +8,31 @@
 <body class="p-6 sm:p-10">
 
     <div class="max-w-6xl mx-auto">
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+    <h1 class="text-xl font-bold text-slate-800">Manage Products</h1>
+
+    <div class="flex items-center gap-2">
+        <label for="category-filter" class="text-sm font-medium text-slate-600">Filter by Category:</label>
+        <select id="category-filter" 
+                onchange="window.location.href = this.value" 
+                class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            
+            <option value="{{ route('admin.products.index', ['category' => 'all']) }}" 
+                {{ !request('category') || request('category') === 'all' ? 'selected' : '' }}>
+                All Categories 🧸
+            </option>
+
+            @foreach($categories as $category)
+                <option value="{{ route('admin.products.index', ['category' => $category->slug]) }}" 
+                    {{ request('category') === $category->slug ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
         <div class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Plushie Inventory</h1>
@@ -83,5 +108,9 @@
         </div>
     </div>
 
+
+    <div class="mt-12 flex justify-center">
+        {{ $products->links() }}
+    </div>
 </body>
 </html>
