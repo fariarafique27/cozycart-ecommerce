@@ -32,8 +32,19 @@ class ProductController extends Controller
           $q->where('slug' , $request->category ) ;
         });
     }
+    
+    // 4. 🔍 Search Filter Logic (New!)
+    // If the user typed something in the search bar
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('name', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('description', 'LIKE', "%{$searchTerm}%");
+        });
+    }
 
-    // 4. Change ->get() to ->paginate(24) 
+    // 5. Change ->get() to ->paginate(24) 
     // We append withQueryString() so filtering parameters don't disappear on Page 2
     //paginate(24) This method:
         // ✅ Executes the query.

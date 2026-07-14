@@ -25,8 +25,17 @@ class ProductController extends Controller
                 $q->where('slug', $request->category);
             });
         }
+        // 4. 🔍 New Search Filter Logic
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('description', 'LIKE', "%{$searchTerm}%");
+            });
+        }
 
-        // 4. Paginate the admin list (e.g., 15 items per page) and retain URL filters
+        // 5. Paginate the admin list (e.g., 15 items per page) and retain URL filters
         $products = $query->paginate(15)->withQueryString();
 
         return view('admin.products.index', compact('products', 'categories'));

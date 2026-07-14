@@ -12,24 +12,51 @@
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
     <h1 class="text-xl font-bold text-slate-800">Manage Products</h1>
 
-    <div class="flex items-center gap-2">
-        <label for="category-filter" class="text-sm font-medium text-slate-600">Filter by Category:</label>
-        <select id="category-filter" 
-                onchange="window.location.href = this.value" 
-                class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            
-            <option value="{{ route('admin.products.index', ['category' => 'all']) }}" 
-                {{ !request('category') || request('category') === 'all' ? 'selected' : '' }}>
-                All Categories 🧸
-            </option>
+    <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+        
+        <form action="{{ route('admin.products.index') }}" method="GET" class="flex gap-2 w-full sm:w-64">
+            @if(request('category'))
+                <input type="hidden" name="category" value="{{ request('category') }}">
+            @endif
 
-            @foreach($categories as $category)
-                <option value="{{ route('admin.products.index', ['category' => $category->slug]) }}" 
-                    {{ request('category') === $category->slug ? 'selected' : '' }}>
-                    {{ $category->name }}
+            <div class="relative w-full">
+                <input type="text" 
+                       name="search" 
+                       value="{{ request('search') }}" 
+                       placeholder="Search products..." 
+                       class="w-full pl-3 pr-8 py-1.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200">
+                
+                @if(request('search'))
+                    <a href="{{ route('admin.products.index', request()->except('search')) }}" class="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600">
+                        ✕
+                    </a>
+                @endif
+            </div>
+            
+            <button type="submit" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition duration-200">
+                Go
+            </button>
+        </form>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+            <select id="category-filter" 
+                    onchange="window.location.href = this.value" 
+                    class="w-full sm:w-auto px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                
+                <option value="{{ route('admin.products.index', array_merge(request()->query(), ['category' => 'all', 'page' => 1])) }}" 
+                    {{ !request('category') || request('category') === 'all' ? 'selected' : '' }}>
+                    All Categories 🧸
                 </option>
-            @endforeach
-        </select>
+
+                @foreach($categories as $category)
+                    <option value="{{ route('admin.products.index', array_merge(request()->query(), ['category' => $category->slug, 'page' => 1])) }}" 
+                        {{ request('category') === $category->slug ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
     </div>
 </div>
 
