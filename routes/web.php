@@ -4,22 +4,31 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\AdminStatsController; // 📊 Imported for Analytics!
 use App\Http\Controllers\ProductController as ShopProductController;
 use App\Http\Controllers\CategoryController;
 use App\Models\Product;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
+// 🧸 Welcome Landing Page
 Route::get('/', function () {
-    // 🧸 2. Fetch the latest plushies from your database table
     $products = Product::latest()->take(6)->get(); 
-
-    // 📥 3. Pass that variable directly into your welcome view
     return view('welcome', compact('products'));
 });
 
+// 🛒 Shopping Cart System Routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
+// 💳 Checkout Engine Route (Clean and unique, outside any groups!)
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+// 🛍️ Public Store Browsing Pages
 Route::get('/products', [ShopProductController::class, 'index'])->name('shop.index');
 Route::get('/product/{product}', [ShopProductController::class, 'show'])->name('shop.show');
-
 
 // 👥 Guest Routes (Login / Registration)
 Route::middleware('guest')->group(function () {
@@ -29,25 +38,27 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-
 // 🔒 Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Customer Storefront Dashboard
-
-
-    // 👑 Admin Panel (Guarded by our custom middleware!)
+    // 👑 Admin Panel Group (Guarded by authentication & your custom Admin middleware)
     Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
             
+            // Admin Home Layout Dashboard
             Route::get('/dashboard', [DashboardController::class, 'adminIndex'])->name('dashboard');
             
+            // 📊 Admin Business Analytics Dashboard (Daily/Monthly sales metrics here!)
+            Route::get('/analytics', [AdminStatsController::class, 'index'])->name('analytics');
+            Route::patch('/orders/{order}/status', [AdminStatsController::class, 'updateStatus'])->name('orders.status');
+
+            // Standard Product Management Resource
             Route::resource('products', ProductController::class);
 
-            //Add category 
+            // Product Inventory Categories Management 
             Route::get('/categories' , [CategoryController::class , 'index' ])->name('categories');
             Route::post('/categories' , [CategoryController::class , 'store' ])->name('categories.store');
         });
