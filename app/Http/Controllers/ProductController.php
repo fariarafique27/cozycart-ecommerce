@@ -32,18 +32,29 @@ class ProductController extends Controller
           $q->where('slug' , $request->category ) ;
         });
     }
+    
+    // 4. 🔍 Search Filter Logic (New!)
+    // If the user typed something in the search bar
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('name', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('description', 'LIKE', "%{$searchTerm}%");
+        });
+    }
 
-    // 4. Change ->get() to ->paginate(12) 
+    // 5. Change ->get() to ->paginate(24) 
     // We append withQueryString() so filtering parameters don't disappear on Page 2
-    //paginate(18) This method:
+    //paginate(24) This method:
         // ✅ Executes the query.
-        // ✅ Fetches 18 records per page.
+        // ✅ Fetches 24 records per page.
         // ✅ Calculates the total number of records.
         // ✅ Calculates the total number of pages.
         // ✅ Detects the current page from the URL (?page=2).
         // ✅ Generates URLs for next/previous pages.
         // ✅ Creates all the pagination metadata.
-    $products = $query->paginate(18)->withQueryString();
+    $products = $query->paginate(24)->withQueryString();
 
     Log::info($products);
 

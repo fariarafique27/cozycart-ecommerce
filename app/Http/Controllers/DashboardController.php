@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -13,6 +15,12 @@ class DashboardController extends Controller
 
     public function adminIndex()
     {
-        return view('admin.dashboard'); // Admin landing view
+        $totalProducts =  Product::count();
+        $totalCategories = Category::count();
+
+        // Optional: If you want to show total customers/users as well
+        $totalUsers = User::where('role', '!=', 'admin')->count();
+
+        return view('admin.dashboard', compact('totalProducts', 'totalCategories', 'totalUsers')); 
     }
 }

@@ -90,12 +90,17 @@
                 
                 <div class="bg-white border border-slate-100 p-5 rounded-xl shadow-xs">
                     <span class="text-xs font-medium text-slate-400 block mb-1">Total Products</span>
-                    <span class="text-2xl font-black text-slate-900">Active</span>
+                    <span class="text-2xl font-black text-slate-900">{{$totalProducts}}</span>
                 </div>
 
                 <div class="bg-white border border-slate-100 p-5 rounded-xl shadow-xs">
                     <span class="text-xs font-medium text-slate-400 block mb-1">Total Categories</span>
-                    <span class="text-2xl font-black text-slate-900">3 Live</span>
+                    <span class="text-2xl font-black text-slate-900">{{$totalCategories}}</span>
+                </div>
+
+                <div class="bg-white border border-slate-100 p-5 rounded-xl shadow-xs">
+                    <span class="text-xs font-medium text-slate-400 block mb-1">Total Sign in users</span>
+                    <span class="text-2xl font-black text-slate-900">{{$totalUsers}}</span>
                 </div>
 
             </div>
