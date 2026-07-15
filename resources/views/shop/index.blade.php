@@ -46,7 +46,7 @@
 
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @forelse($products as $product)
                 @include('components.product-card', ['product' => $product])
             @empty
