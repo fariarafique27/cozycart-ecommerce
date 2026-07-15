@@ -27,7 +27,7 @@
                             Return to Admin Panel 👑
                         </a>
                     @else
-                        <a href="#products-showcase" 
+                        <a href="{{ route('shop.index') }}" 
                         class="w-full sm:w-auto px-8 py-4 text-base font-medium text-white bg-pink-600 hover:bg-pink-700 rounded-xl shadow-md shadow-pink-200 transition text-center">
                             Go to Shopping Catalog 🛍️
                         </a>
