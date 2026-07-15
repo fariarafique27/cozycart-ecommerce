@@ -1,111 +1,107 @@
-<x-layout>
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-black text-slate-900 mb-8">Admin Sales Analytics 📊</h1>
+<x-layout theme="admin">
+    <div class="space-y-8">
+        <!-- Header -->
+        <div>
+            <h1 class="text-2xl font-bold text-stone-900">CozyCart Stats & Analytics 📈</h1>
+            <p class="text-stone-500 text-sm">Real-time overview of your store's sales metrics and order fulfillment.</p>
+        </div>
 
-        @if(session('success'))
-            <div class="mb-6 p-4 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold border border-emerald-100">
-                {{ session('success') }}
+        <!-- 💰 Financial Overview Cards Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs">
+                <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Today's Revenue</p>
+                <p class="text-2xl font-bold text-stone-900 mt-2">${{ number_format($dailySales, 2) }}</p>
             </div>
-        @endif
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Today's Sales</span>
-                <h3 class="text-3xl font-black text-slate-900 mt-1">${{ number_format($dailySales, 2) }}</h3>
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs">
+                <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">This Month</p>
+                <p class="text-2xl font-bold text-stone-900 mt-2">${{ number_format($monthlySales, 2) }}</p>
             </div>
-            <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <span class="text-xs font-bold text-pink-600 uppercase tracking-widest">Monthly Sales</span>
-                <h3 class="text-3xl font-black text-slate-900 mt-1">${{ number_format($monthlySales, 2) }}</h3>
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs">
+                <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">This Year</p>
+                <p class="text-2xl font-bold text-stone-900 mt-2">${{ number_format($yearlySales, 2) }}</p>
             </div>
-            <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Yearly Sales</span>
-                <h3 class="text-3xl font-black text-slate-900 mt-1">${{ number_format($yearlySales, 2) }}</h3>
-            </div>
-            <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">All-Time Sales</span>
-                <h3 class="text-3xl font-black text-slate-900 mt-1">${{ number_format($totalSalesAllTime, 2) }}</h3>
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs bg-gradient-to-br from-pink-50/50 to-rose-50/30">
+                <p class="text-xs font-semibold text-stone-500 uppercase tracking-wider">All-Time Revenue</p>
+                <p class="text-2xl font-bold text-pink-600 mt-2">${{ number_format($totalSalesAllTime, 2) }}</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-            <div class="p-6 bg-rose-50/50 rounded-3xl border border-rose-100 flex items-center justify-between">
+        <!-- 📦 Fulfillment Counters -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-rose-900">Pending Deliveries</p>
-                    <h4 class="text-4xl font-black text-rose-950 mt-1">{{ $pendingOrdersCount }}</h4>
+                    <p class="text-sm font-medium text-stone-500">Total Units Sold</p>
+                    <p class="text-3xl font-bold text-stone-900 mt-1">{{ $totalProductsSold }}</p>
                 </div>
-                <span class="text-4xl">🚚</span>
+                <span class="text-3xl">🧸</span>
             </div>
-            <div class="p-6 bg-emerald-50/50 rounded-3xl border border-emerald-100 flex items-center justify-between">
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-emerald-900">Successfully Delivered</p>
-                    <h4 class="text-4xl font-black text-emerald-950 mt-1">{{ $deliveredOrdersCount }}</h4>
+                    <p class="text-sm font-medium text-amber-600">Pending Orders</p>
+                    <p class="text-3xl font-bold text-amber-600 mt-1">{{ $pendingOrdersCount }}</p>
                 </div>
-                <span class="text-4xl">✅</span>
+                <span class="text-3xl">⏳</span>
             </div>
-            <div class="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100 flex items-center justify-between">
+            <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-indigo-900">Total Units Sold</p>
-                    <h4 class="text-4xl font-black text-indigo-950 mt-1">{{ $totalProductsSold }}</h4>
+                    <p class="text-sm font-medium text-emerald-600">Delivered Orders</p>
+                    <p class="text-3xl font-bold text-emerald-600 mt-1">{{ $deliveredOrdersCount }}</p>
                 </div>
-                <span class="text-4xl">🧸</span>
+                <span class="text-3xl">✅</span>
             </div>
         </div>
 
-        <div class="bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-50 flex justify-between items-center">
-                <h2 class="text-lg font-bold text-slate-900">Order Dispatch Log</h2>
+        <!-- 📋 Orders List & Status Update Tool -->
+        <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-xs">
+            <div class="p-6 border-b border-stone-100">
+                <h2 class="text-lg font-bold text-stone-900">Recent Transactions Log</h2>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-400 text-xs font-bold uppercase tracking-wider">
-                            <th class="px-6 py-4">Order ID</th>
-                            <th class="px-6 py-4">Customer</th>
-                            <th class="px-6 py-4">Address</th>
-                            <th class="px-6 py-4">Total Amount</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Action</th>
+                        <tr class="bg-stone-50 text-stone-500 text-xs font-semibold uppercase border-b border-stone-100">
+                            <th class="p-4">ID</th>
+                            <th class="p-4">Customer</th>
+                            <th class="p-4">Total</th>
+                            <th class="p-4">Date</th>
+                            <th class="p-4">Status</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                    <tbody class="divide-y divide-stone-100 text-sm">
                         @forelse($orders as $order)
-                            <tr>
-                                <td class="px-6 py-4 font-bold text-slate-900">#{{ $order->id }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="font-semibold text-slate-800 block">{{ $order->customer_name }}</span>
-                                    <span class="text-slate-400 text-xs">{{ $order->customer_email }}</span>
+                            <tr class="hover:bg-stone-50/50 transition">
+                                <td class="p-4 font-semibold text-stone-700">#{{ $order->id }}</td>
+                                <td class="p-4">
+                                    <p class="font-semibold text-stone-900">{{ $order->customer_name }}</p>
+                                    <p class="text-xs text-stone-400">{{ $order->customer_email }}</p>
                                 </td>
-                                <td class="px-6 py-4 text-slate-500 max-w-xs truncate">{{ $order->shipping_address }}</td>
-                                <td class="px-6 py-4 font-bold">${{ number_format($order->total_amount, 2) }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold
-                                        {{ $order->status === 'delivered' ? 'bg-emerald-50 text-emerald-700' : ($order->status === 'cancelled' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700') }}">
-                                        {{ ucfirst($order->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" class="inline-flex gap-1">
+                                <td class="p-4 font-bold text-stone-900">${{ number_format($order->total_amount, 2) }}</td>
+                                <td class="p-4 text-stone-500">{{ $order->created_at->format('M d, Y H:i') }}</td>
+                                <td class="p-4">
+                                    <form action="{{ route('admin.orders.status', $order) }}" method="POST">
                                         @csrf
                                         @method('PATCH')
-                                        <select name="status" onchange="this.form.submit()" class="px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs text-slate-600 focus:outline-none">
-                                            <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        <select name="status" onchange="this.form.submit()" class="text-xs font-semibold rounded-lg px-2 py-1 border border-stone-200 bg-white cursor-pointer focus:ring-pink-500 focus:border-pink-500">
+                                            <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+                                            <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>✅ Delivered</option>
+                                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>❌ Cancelled</option>
                                         </select>
                                     </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-12 text-center text-slate-500">No orders placed yet.</td>
+                                <td colspan="5" class="p-8 text-center text-stone-400">No orders have been placed yet. Go buy some plushies!</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 border-t border-slate-50">
-                {{ $orders->links() }}
-            </div>
+            @if($orders->hasPages())
+                <div class="p-4 border-t border-stone-100">
+                    {{ $orders->links() }}
+                </div>
+            @endif
         </div>
     </div>
 </x-layout>
