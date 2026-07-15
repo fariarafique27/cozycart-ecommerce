@@ -1,31 +1,12 @@
 <x-layout>
-    <body class="min-h-full flex flex-col font-sans text-slate-800">
-
-        <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-                <a href="{{ route('shop.index') }}" class="text-xl font-black text-indigo-600 tracking-tight flex items-center gap-1">
-                    <span>🧸</span> CozyCart
-                </a>
-                
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('cart.index') }}" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1">
-                        🛒 View Cart ({{ count(session('cart', [])) }})
-                    </a>
-                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-slate-500 hover:text-indigo-600 flex items-center gap-1">
-                        &larr; Back to Shop
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
             
-            @if(session('success'))
+            <!-- @if(session('success'))
                 <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl text-sm font-semibold flex justify-between items-center shadow-xs">
                     <span>{{ session('success') }}</span>
                     <a href="{{ route('cart.index') }}" class="underline hover:text-emerald-900">View Cart &rarr;</a>
                 </div>
-            @endif
+            @endif -->
 
             <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-xs grid grid-cols-1 md:grid-cols-2 gap-10">
                 
@@ -81,6 +62,4 @@
 
             </div>
         </main>
-
-    </body>
 </x-layout>

@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="max-w-4xl mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto px-4 py-6">
         <h1 class="text-3xl font-black text-slate-900 mb-8">Your Shopping Cart 🛒</h1>
 
         @if(session('success'))
