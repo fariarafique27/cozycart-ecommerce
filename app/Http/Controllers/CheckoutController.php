@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Mail;
+use App\Mail\OrderConfirmed;
 
 class CheckoutController extends Controller
 {
     public function store(Request $request)
     {
-
         if (!auth()->check()) {
-        return redirect()->route('login')
-            ->with('error', 'Please log in to place your order and secure your plushies! 🔐');
-    }
-    
+            return redirect()->route('login')
+                ->with('error', 'Please log in to place your order and secure your plushies! 🔐');
+        }
+
         $cart = session()->get('cart', []);
 
         // 🚨 Safety Check: If the cart emptied out somehow, send them back
@@ -33,7 +35,7 @@ class CheckoutController extends Controller
         ]);
 
         // 🔒 Wrap database operations in a transaction to guarantee data safety
-        DB::transaction(function () use ($request, $cart) {
+        $order = DB::transaction(function () use ($request, $cart) {
             $totalAmount = 0;
             foreach ($cart as $id => $details) {
                 $totalAmount += $details['price'] * $details['quantity'];
@@ -45,7 +47,7 @@ class CheckoutController extends Controller
                 'customer_email' => $request->customer_email,
                 'shipping_address' => $request->shipping_address,
                 'total_amount' => $totalAmount,
-                'status' => 'pending', // Defaults to pending delivery
+                'status' => 'pending', 
             ]);
 
             // 2. Loop through the cart items, subtract inventory stock, and write items
@@ -72,7 +74,16 @@ class CheckoutController extends Controller
 
             // 3. Clear out the user's active shopping cart session
             session()->forget('cart');
+
+            return $order; 
         });
+
+        // 💌 Send the Email dynamically to the verified customer email field!
+        try {
+            Mail::to($request->customer_email)->send(new OrderConfirmed($order));
+        } catch (\Exception $e) {
+            Log::error("Mailtrap delivery failed: " . $e->getMessage());
+        }
 
         return redirect()->route('shop.index')->with('success', '🎉 Huzzah! Your order was placed successfully!');
     }

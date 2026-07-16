@@ -111,15 +111,24 @@
                                 <td class="p-4 font-bold text-stone-900">${{ number_format($order->total_amount, 2) }}</td>
                                 <td class="p-4 text-stone-500">{{ $order->created_at->format('M d, Y H:i') }}</td>
                                 <td class="p-4">
-                                    <form action="{{ route('admin.orders.status', $order) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <select name="status" onchange="this.form.submit()" class="text-xs font-semibold rounded-lg px-2 py-1 border border-stone-200 bg-white cursor-pointer focus:ring-pink-500 focus:border-pink-500">
-                                            <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>⏳ Pending</option>
-                                            <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>✅ Delivered</option>
-                                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>❌ Cancelled</option>
-                                        </select>
-                                    </form>
+                                <form action="{{ route('admin.orders.status', $order) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    
+                                    <select name="status" 
+                                            onchange="this.form.submit()" 
+                                            class="text-xs font-semibold rounded-lg px-2 py-1 border border-stone-200 bg-white cursor-pointer focus:ring-pink-500 focus:border-pink-500">
+                                        
+                                        <option value="pending" 
+                                                {{ $order->status === 'pending' ? 'selected' : '' }} 
+                                                {{ $order->status !== 'pending' ? 'disabled' : '' }}>
+                                            ⏳ Pending
+                                        </option>
+                                        
+                                        <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>✅ Delivered</option>
+                                        <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>❌ Cancelled</option>
+                                    </select>
+                                </form>
                                 </td>
                                 <td class="p-4 text-right">
                                     <button 

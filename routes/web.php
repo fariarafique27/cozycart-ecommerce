@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;   
+use Illuminate\Support\Facades\Mail;
 
 // 🧸 Welcome Landing Page
 Route::get('/', function () {
@@ -55,9 +56,8 @@ Route::middleware('auth')->group(function () {
             
             // 📊 Admin Business Analytics Dashboard (Daily/Monthly sales metrics here!)
             Route::get('/analytics', [AdminStatsController::class, 'index'])->name('analytics');
-            Route::patch('/orders/{order}/status', [AdminStatsController::class, 'updateStatus'])->name('orders.status');
-
-            // Standard Product Management Resource
+            Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+              // Standard Product Management Resource
             Route::resource('products', ProductController::class);
 
             // Product Inventory Categories Management 
