@@ -65,11 +65,11 @@
             </a>
         </div>
 
-        @if(session('success'))
+        <!-- @if(session('success'))
             <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm rounded-xl">
                 {{ session('success') }}
             </div>
-        @endif
+        @endif -->
 
         <div class="bg-white border border-slate-100 rounded-2xl shadow-xs overflow-hidden">
             <table class="w-full text-left border-collapse">

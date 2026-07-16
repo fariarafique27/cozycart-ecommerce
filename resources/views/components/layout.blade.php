@@ -116,19 +116,25 @@
         @endif
 
         <main class="flex-1 overflow-y-auto p-4 sm:p-8">
-            @if(session('success'))
-                <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl text-sm font-semibold flex justify-between items-center shadow-xs" id="flash-banner-success">
-                    <span>🎉 {{ session('success') }}</span>
-                    <button onclick="document.getElementById('flash-banner-success').remove()" class="text-emerald-400 hover:text-emerald-600 cursor-pointer font-bold">✕</button>
+          @if(session('success') || session('cart_success'))
+            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-2xl text-sm font-semibold flex justify-between items-center shadow-xs" id="flash-banner-success">
+                {{-- Show whichever message exists --}}
+                <span>🎉 {{ session('success') ?? session('cart_success') }}</span>
+                
+                <div class="flex items-center gap-4">
+                    {{-- ONLY show View Cart if it was a cart action --}}
+                    @if(session('cart_success'))
+                        <a href="{{ route('cart.index') }}" class="underline hover:text-emerald-900 transition">
+                            View Cart →
+                        </a>
+                    @endif
+                    
+                    <button onclick="document.getElementById('flash-banner-success').remove()" class="text-emerald-400 hover:text-emerald-600 cursor-pointer font-bold">
+                        ✕
+                    </button>
                 </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-6 p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-2xl text-sm font-semibold flex justify-between items-center shadow-xs" id="flash-banner-error">
-                    <span>⚠️ {{ session('error') }}</span>
-                    <button onclick="document.getElementById('flash-banner-error').remove()" class="text-rose-400 hover:text-rose-600 cursor-pointer font-bold">✕</button>
-                </div>
-            @endif
+            </div>
+        @endif
 
             {{ $slot }}  
         </main>
