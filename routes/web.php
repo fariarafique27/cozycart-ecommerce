@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Models\Product;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;   
 
 // 🧸 Welcome Landing Page
 Route::get('/', function () {
@@ -41,13 +42,14 @@ Route::middleware('guest')->group(function () {
 // 🔒 Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+    Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.index');
+         
     // 👑 Admin Panel Group (Guarded by authentication & your custom Admin middleware)
     Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
-            
+
             // Admin Home Layout Dashboard
             Route::get('/dashboard', [DashboardController::class, 'adminIndex'])->name('dashboard');
             
@@ -61,5 +63,6 @@ Route::middleware('auth')->group(function () {
             // Product Inventory Categories Management 
             Route::get('/categories' , [CategoryController::class , 'index' ])->name('categories');
             Route::post('/categories' , [CategoryController::class , 'store' ])->name('categories.store');
-        });
+
+              });
 });

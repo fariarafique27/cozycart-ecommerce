@@ -80,6 +80,10 @@
                                 <a href="{{ route('cart.index') }}" class="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold {{ request()->routeIs('cart.index') ? 'bg-pink-50 text-pink-600' : 'text-stone-600 hover:text-pink-600 hover:bg-stone-50' }} rounded-xl transition">
                                     <span>🛒</span> View Cart
                                 </a>
+                                <a href="{{ route('orders.index') }}" 
+                                class="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold {{ request()->routeIs('orders.index') ? 'bg-pink-50 text-pink-600' : 'text-stone-600 hover:text-pink-600 hover:bg-stone-50' }} rounded-xl transition">
+                                    <span>📦</span> View Orders
+                                </a>
                             </nav>
                         </div>
                     @endif
