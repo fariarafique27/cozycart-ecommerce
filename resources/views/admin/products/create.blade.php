@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Plushie 🧸</title>
-    @vite('resources/css/app.css')
-</head>
+<x-layout theme="admin">
 <body class="p-6 sm:p-10 flex justify-center items-center min-h-full">
 
     <div class="w-full max-w-lg bg-white border border-slate-100 p-8 rounded-2xl shadow-xs">
@@ -60,4 +54,4 @@
     </div>
 
 </body>
-</html>
+</x-layout>
