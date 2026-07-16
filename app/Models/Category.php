@@ -25,4 +25,14 @@ class Category extends Model
         });
     }
 
+    public function canBeDeleted(): bool
+    {
+        // Returns true if no products exist, false otherwise
+        return !$this->products()->exists();
+    }
+
+    public static function getCount(): int
+    {
+        return self::count();
+    }
 }

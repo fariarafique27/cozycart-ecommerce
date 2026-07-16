@@ -12,32 +12,16 @@ use App\Http\Requests\ProductRequest;
 class ProductController extends Controller
 {
     // 1. List all products
-    public function index(Request $request)
+        public function index(Request $request)
     {
-        // 1. Fetch all categories so the admin can select them
         $categories = Category::all();
 
-        // 2. Start building your product query (showing latest products first)
-        $query = Product::with('category')->latest();
-
-        // 3. Apply the exact same category filter logic!
-        if ($request->has('category') && $request->category !== 'all') {
-            $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->category);
-            });
-        }
-        // 4. 🔍 New Search Filter Logic
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'LIKE', "%{$searchTerm}%")
-                ->orWhere('description', 'LIKE', "%{$searchTerm}%");
-            });
-        }
-
-        // 5. Paginate the admin list (e.g., 15 items per page) and retain URL filters
-        $products = $query->paginate(15)->withQueryString();
+        $products = Product::with('category')
+            ->latest()
+            ->filterByCategory($request->category)
+            ->search($request->search)
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.products.index', compact('products', 'categories'));
     }

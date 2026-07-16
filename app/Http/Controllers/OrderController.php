@@ -21,29 +21,24 @@ class OrderController extends Controller
         return view('orders.index', compact('orders'));
     }
 
-    public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
+     public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
         $newStatus = $request->validated()['status'];
+        $oldStatus = $order->status;
 
-        // 🔒 1. Prevention Logic
-        if ($order->status !== 'pending' && $newStatus === 'pending') {
-            return back()->with('error', 'You cannot move an order back to pending!');
-        }
+        try {
+            // Delegate logic to the model
+            $order->updateStatusWithLogic($newStatus);
 
-        // 🔒 2. Notification Logic
-        if ($order->status !== $newStatus && in_array($newStatus, ['delivered', 'cancelled'])) {
-            $order->update(['status' => $newStatus]);
-
-            try {
+            // Delegate notification logic
+            if ($order->shouldNotifyCustomer($oldStatus, $newStatus)) {
                 Mail::to($order->customer_email)->send(new OrderStatusChanged($order));
-            } catch (\Exception $e) {
-                Log::error("Failed to send status email: " . $e->getMessage());
+                return back()->with('success', 'Order status updated and customer notified! 🧸');
             }
 
-            return back()->with('success', 'Order status updated and customer notified! 🧸');
+            return back()->with('success', 'Status updated successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $order->update(['status' => $newStatus]);
-        return back()->with('success', 'Status updated successfully.');
     }
 }

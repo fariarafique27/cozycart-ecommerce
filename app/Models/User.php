@@ -48,4 +48,18 @@ class User extends Authenticatable
         ];
     }
 
+    public static function createNewUser(array $data)
+    {
+        return self::create([
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+        ]);
+    }
+
+    public static function countCustomers(): int
+    {
+        return self::where('role', '!=', 'admin')->count();
+    }
+
 }

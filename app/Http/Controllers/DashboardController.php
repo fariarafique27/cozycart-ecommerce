@@ -15,12 +15,12 @@ class DashboardController extends Controller
 
     public function adminIndex()
     {
-        $totalProducts =  Product::count();
-        $totalCategories = Category::count();
+        $data = [
+            'totalProducts'    => Product::getCount(),
+            'totalCategories'  => Category::getCount(),
+            'totalUsers'       => User::countCustomers(),
+        ];
 
-        // Optional: If you want to show total customers/users as well
-        $totalUsers = User::where('role', '!=', 'admin')->count();
-
-        return view('admin.dashboard', compact('totalProducts', 'totalCategories', 'totalUsers')); 
+        return view('admin.dashboard', $data);
     }
 }

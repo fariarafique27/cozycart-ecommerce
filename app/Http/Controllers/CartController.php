@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateCartRequest;
-
+use App\Services\CartService;
 class CartController extends Controller
 {
     // 🛒 1. View the Cart Page
@@ -51,33 +51,23 @@ public function add(Request $request, Product $product)
 // 🔄 3. Update Item Quantity (with Stock Check!)
 // app/Http/Controllers/CartController.php
 
-public function update(UpdateCartRequest $request, $id)
-{
-    $cart = session()->get('cart', []);
-
-    if (isset($cart[$id])) {
+   public function update(UpdateCartRequest $request, $id, CartService $cartService)
+    {
         $product = Product::find($id);
 
         if (!$product) {
             return redirect()->back()->with('error', 'Product not found.');
         }
 
-        // 🚨 If they request more than available stock:
-        if ($request->quantity > $product->stock) {
-            // We redirect back with ONLY the error message.
-            // By NOT using ->withInput(), the browser automatically discards the typed value 
-            // and resets the input field to the verified value in your session.
-            return redirect()->back()->with('error', "Cannot update quantity. Only {$product->stock} items are available in stock.");
+        try {
+            // All the logic is now hidden inside the service
+            $cartService->updateQuantity($id, $request->validated()['quantity'], $product->stock);
+            
+            return redirect()->back()->with('cart_success', 'Cart updated!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        // If validation passes, save the new quantity to the session
-        $cart[$id]['quantity'] = $request->validated()['quantity']; // Use validated data
-        session()->put('cart', $cart);
-        return redirect()->back()->with('cart_success', 'Cart updated!');
-        }
-
-    return redirect()->back();
-}
+    }
 
     // ❌ 4. Remove an Item from the Cart completely
     public function remove($id)

@@ -14,23 +14,14 @@ class ProductController extends Controller
     {
         $categories = Category::all();
 
-        $query = Product::with('category')
-            ->orderByRaw('CASE WHEN image_path IS NULL THEN 1 ELSE 0 END ASC')
-            ->latest();
-
-        // 3. Category Filter
-        if ($request->filled('category') && $request->category !== 'all') {
-            $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
-        }
-
-        // 4. Search Filter
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(fn($q) => $q->where('name', 'LIKE', "%{$searchTerm}%")
-                                    ->orWhere('description', 'LIKE', "%{$searchTerm}%"));
-        }
-
-        $products = $query->paginate(24)->withQueryString();
+        // Use our new scopes!
+        $products = Product::with('category')
+            ->prioritizeImages()
+            ->byCategory($request->category)
+            ->search($request->search)
+            ->latest()
+            ->paginate(24)
+            ->withQueryString();
 
         return view('shop.index', compact('products', 'categories'));
     }

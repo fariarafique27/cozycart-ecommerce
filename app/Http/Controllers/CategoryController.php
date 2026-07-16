@@ -31,17 +31,13 @@ public function update(UpdateCategoryRequest $request, Category $category)
     return back()->with('success', 'Category updated successfully! 🎉');
 }
 
-public function destroy(Category $category)
-{
-    // 🔒 GUARD: Check if the category has any products
-    // (Assuming your Category model has a 'products' relationship defined)
-    if ($category->products()->exists()) {
-        return back()->with('error', "Cannot delete '{$category->name}' because it still has products assigned to it! Please reassign or delete those products first. 🧸");
+    public function destroy(Category $category)
+    {
+        if (!$category->canBeDeleted()) {
+            return back()->with('error', "Cannot delete '{$category->name}' because it still has products assigned to it! 🧸");
+        }
+
+        $category->delete();
+        return back()->with('success', 'Category deleted successfully! 🗑️');
     }
-
-    // If no products are attached, safe to delete!
-    $category->delete();
-
-    return back()->with('success', 'Category deleted successfully! 🗑️');
-}
 }

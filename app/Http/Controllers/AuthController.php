@@ -24,11 +24,8 @@ class AuthController extends Controller
         // Retrieve only the validated, clean data
         $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        //use User model to create user 
+        $user = User::createNewUser($validated);
 
         // Log the new user in instantly
         Auth::login($user);
