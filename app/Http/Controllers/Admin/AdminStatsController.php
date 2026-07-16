@@ -28,7 +28,10 @@ class AdminStatsController extends Controller
         $deliveredOrdersCount = Order::where('status', 'delivered')->count();
 
         // 📋 4. Recent Logs Paginated Feed
-        $orders = Order::latest()->paginate(10);
+       // $orders = Order::latest()->paginate(10);
+       //Path 1 (user): Go from the Order to the User table (to find who bought it).
+       // Path 2 (items.product): Go from the Order to the Order Items table, and then jump to the Product table (to find what they bought).
+        $orders = Order::with(['user', 'items.product'])->latest()->paginate(10);
 
         return view('admin.analytics.index', compact(
             'dailySales', 'monthlySales', 'yearlySales', 'totalSalesAllTime',
