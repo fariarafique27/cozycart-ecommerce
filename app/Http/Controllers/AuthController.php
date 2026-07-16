@@ -18,7 +18,7 @@ class AuthController extends Controller
     }
 
     // Handle registration request
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
 
         // Retrieve only the validated, clean data
@@ -44,7 +44,7 @@ class AuthController extends Controller
     }
 
     // Handle login request
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
             $request->session()->regenerate();
