@@ -1,5 +1,5 @@
 <x-layout theme="admin">
-      <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main class="flex-grow max-w w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
             
             <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-6 sm:p-8 text-white shadow-md mb-8">
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight mb-2">Welcome Back ! 🧸</h1>

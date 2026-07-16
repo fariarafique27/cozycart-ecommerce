@@ -1,5 +1,6 @@
 <x-layout theme="admin">
-    <div id="order-drawer" class="fixed inset-0 z-50 invisible transition-opacity duration-300" role="dialog" aria-modal="true">
+    <div class="flex-grow max-w w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+           <div id="order-drawer" class="fixed inset-0 z-50 invisible transition-opacity duration-300" role="dialog" aria-modal="true">
         <div id="drawer-backdrop" class="fixed inset-0 bg-stone-900/40 opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
         
         <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out">
@@ -163,6 +164,8 @@
         @endif
     </div>
 
+    </div>
+ 
     <script>
         const drawer = document.getElementById('order-drawer');
         const backdrop = document.getElementById('drawer-backdrop');

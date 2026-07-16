@@ -12,6 +12,12 @@ class CheckoutController extends Controller
 {
     public function store(Request $request)
     {
+
+        if (!auth()->check()) {
+        return redirect()->route('login')
+            ->with('error', 'Please log in to place your order and secure your plushies! 🔐');
+    }
+    
         $cart = session()->get('cart', []);
 
         // 🚨 Safety Check: If the cart emptied out somehow, send them back

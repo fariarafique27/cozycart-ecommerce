@@ -70,83 +70,96 @@
                         <p class="text-sm text-slate-500">Estimated Subtotal</p>
                         <h2 class="text-2xl font-black text-slate-900">${{ number_format($total, 2) }}</h2>
                     </div>
-                    <button onclick="openCheckoutModal()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-center rounded-xl text-sm shadow-md transition cursor-pointer">
-    Proceed to Checkout 💳
-</button>
-<div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 transform transition-all">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black text-slate-900">Confirm Order Details 📝</h2>
-            <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer">✕</button>
-        </div>
+                    
+                    @auth
+                        <button type="button" onclick="openCheckoutModal()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-center rounded-xl text-sm shadow-md transition cursor-pointer">
+                            Proceed to Checkout 💳
+                        </button>
+                    @else
+                        <div class="space-y-3">
+                            <a href="{{ route('login') }}" class="block text-center w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition text-sm shadow-md">
+                                Log In to Place Order 🔐
+                            </a>
+                            <p class="text-xs text-stone-400 text-center">
+                                You can keep adding cute items to your cart, but you must log in to checkout!
+                            </p>
+                        </div>
+                    @endauth
+                </div> {{-- 👈 Closed this div properly --}}
 
-        <p class="text-slate-500 text-sm mb-6">You're almost there! Review your details below to place your order. No actual payment method is required for this demo.</p>
+                <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 transform transition-all">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-black text-slate-900">Confirm Order Details 📝</h2>
+                            <button type="button" onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer">✕</button>
+                        </div>
 
-        <form action="{{ route('checkout.store') }}" method="POST" class="space-y-4">
-            @csrf
-            
-            @auth
-                <input type="hidden" name="customer_name" value="{{ auth()->user()->name }}">
-                <input type="hidden" name="customer_email" value="{{ auth()->user()->email }}">
+                        <p class="text-slate-500 text-sm mb-6">You're almost there! Review your details below to place your order. No actual payment method is required for this demo.</p>
 
-                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm uppercase">
-                        {{ substr(auth()->user()->name, 0, 2) }}
-                    </div>
-                    <div>
-                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Ordering As</p>
-                        <p class="text-sm font-bold text-slate-900">{{ auth()->user()->name }}</p>
-                        <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
+                        <form action="{{ route('checkout.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            
+                            @auth
+                                <input type="hidden" name="customer_name" value="{{ auth()->user()->name }}">
+                                <input type="hidden" name="customer_email" value="{{ auth()->user()->email }}">
+
+                                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm uppercase">
+                                        {{ substr(auth()->user()->name, 0, 2) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Ordering As</p>
+                                        <p class="text-sm font-bold text-slate-900">{{ auth()->user()->name }}</p>
+                                        <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Your Full Name</label>
+                                        <input type="text" name="customer_name" required placeholder="John Doe" 
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
+                                        <input type="email" name="customer_email" required placeholder="john@example.com" 
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+                            @endauth
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Shipping Address</label>
+                                <textarea name="shipping_address" required rows="3" placeholder="123 Cozy Lane, Plushie Town" 
+                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                            </div>
+
+                            <div class="bg-indigo-50 rounded-2xl p-4 flex justify-between items-center mt-6">
+                                <span class="text-sm font-semibold text-indigo-900">Total Amount Due</span>
+                                <span class="text-xl font-black text-indigo-950">${{ number_format($total, 2) }}</span>
+                            </div>
+
+                            <div class="flex gap-3 pt-4">
+                                <button type="button" onclick="closeCheckoutModal()" class="w-1/2 py-3 border border-slate-200 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="w-1/2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition cursor-pointer">
+                                    Confirm Order 🎉
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            @else
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Your Full Name</label>
-                        <input type="text" name="customer_name" required placeholder="John Doe" 
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
-                        <input type="email" name="customer_email" required placeholder="john@example.com" 
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-            @endauth
-
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Shipping Address</label>
-                <textarea name="shipping_address" required rows="3" placeholder="123 Cozy Lane, Plushie Town" 
-                          class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
-            </div>
-
-            <div class="bg-indigo-50 rounded-2xl p-4 flex justify-between items-center mt-6">
-                <span class="text-sm font-semibold text-indigo-900">Total Amount Due</span>
-                <span class="text-xl font-black text-indigo-950">${{ number_format($total, 2) }}</span>
-            </div>
-
-            <div class="flex gap-3 pt-4">
-                <button type="button" onclick="closeCheckoutModal()" class="w-1/2 py-3 border border-slate-200 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-50 transition cursor-pointer">
-                    Cancel
-                </button>
-                <button type="submit" class="w-1/2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition cursor-pointer">
-                    Confirm Order 🎉
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openCheckoutModal() {
-        document.getElementById('checkout-modal').classList.remove('hidden');
-    }
-    function closeCheckoutModal() {
-        document.getElementById('checkout-modal').classList.add('hidden');
-    }
-</script>
-                </div>
+                <script>
+                    function openCheckoutModal() {
+                        document.getElementById('checkout-modal').classList.remove('hidden');
+                    }
+                    function closeCheckoutModal() {
+                        document.getElementById('checkout-modal').classList.add('hidden');
+                    }
+                </script>
             </div>
         @endif
     </div>
