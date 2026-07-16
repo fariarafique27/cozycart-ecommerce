@@ -18,6 +18,6 @@ class AdminMiddleware
         }
 
         // Otherwise, send them away (e.g., to customer dashboard or login)
-        return redirect('/dashboard')->with('error', 'Access denied. Admins only!');
+        return redirect('/')->with('error', 'Access denied. Admins only!');
     }
 }
