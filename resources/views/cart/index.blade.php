@@ -73,12 +73,11 @@
                     <button onclick="openCheckoutModal()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-center rounded-xl text-sm shadow-md transition cursor-pointer">
     Proceed to Checkout 💳
 </button>
-
 <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 transform transition-all">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-black text-slate-900">Confirm Order Details 📝</h2>
-            <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">✕</button>
+            <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer">✕</button>
         </div>
 
         <p class="text-slate-500 text-sm mb-6">You're almost there! Review your details below to place your order. No actual payment method is required for this demo.</p>
@@ -86,17 +85,35 @@
         <form action="{{ route('checkout.store') }}" method="POST" class="space-y-4">
             @csrf
             
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Your Full Name</label>
-                <input type="text" name="customer_name" required placeholder="John Doe" 
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
+            @auth
+                <input type="hidden" name="customer_name" value="{{ auth()->user()->name }}">
+                <input type="hidden" name="customer_email" value="{{ auth()->user()->email }}">
 
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
-                <input type="email" name="customer_email" required placeholder="john@example.com" 
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm uppercase">
+                        {{ substr(auth()->user()->name, 0, 2) }}
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Ordering As</p>
+                        <p class="text-sm font-bold text-slate-900">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
+                    </div>
+                </div>
+            @else
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Your Full Name</label>
+                        <input type="text" name="customer_name" required placeholder="John Doe" 
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
+                        <input type="email" name="customer_email" required placeholder="john@example.com" 
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+            @endauth
 
             <div>
                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Shipping Address</label>
