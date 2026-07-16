@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
@@ -18,17 +20,14 @@ class AuthController extends Controller
     // Handle registration request
     public function register(Request $request)
     {
-        $credentials = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
 
-        // Create the user (defaults to 'customer' role based on our migration)
+        // Retrieve only the validated, clean data
+        $validated = $request->validated();
+
         $user = User::create([
-            'name' => $credentials['name'],
-            'email' => $credentials['email'],
-            'password' => Hash::make($credentials['password']),
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
         // Log the new user in instantly
@@ -47,12 +46,7 @@ class AuthController extends Controller
     // Handle login request
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($request->validated())) {
             $request->session()->regenerate();
 
             // Dynamic redirect based on our flexible role column 🎯

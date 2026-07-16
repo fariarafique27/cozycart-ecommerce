@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Requests\AdminUpdateOrderStatusRequest;
 
 class AdminStatsController extends Controller
 {
@@ -40,10 +41,10 @@ class AdminStatsController extends Controller
         ));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(AdminUpdateOrderStatusRequest $request, Order $order)
     {
-        $request->validate(['status' => 'required|in:pending,delivered,cancelled']);
-        $order->update(['status' => $request->status]);
+        // Use the validated status from the request
+        $order->update(['status' => $request->validated()['status']]);
 
         return redirect()->back()->with('success', "Order #{$order->id} status updated successfully!");
     }

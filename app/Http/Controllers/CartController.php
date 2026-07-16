@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product; // 👈 Crucial import so Laravel knows what a Product is!
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateCartRequest;
 
 class CartController extends Controller
 {
@@ -50,7 +51,7 @@ public function add(Request $request, Product $product)
 // 🔄 3. Update Item Quantity (with Stock Check!)
 // app/Http/Controllers/CartController.php
 
-public function update(Request $request, $id)
+public function update(UpdateCartRequest $request, $id)
 {
     $cart = session()->get('cart', []);
 
@@ -70,12 +71,10 @@ public function update(Request $request, $id)
         }
 
         // If validation passes, save the new quantity to the session
-        if ($request->quantity > 0) {
-            $cart[$id]['quantity'] = $request->quantity;
-            session()->put('cart', $cart);
-            return redirect()->back()->with('success', 'Cart updated!');
+        $cart[$id]['quantity'] = $request->validated()['quantity']; // Use validated data
+        session()->put('cart', $cart);
+        return redirect()->back()->with('cart_success', 'Cart updated!');
         }
-    }
 
     return redirect()->back();
 }

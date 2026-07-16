@@ -5,6 +5,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 
 class CategoryController extends Controller
@@ -15,53 +17,16 @@ class CategoryController extends Controller
     }
 
 
-public function store(Request $request)
+public function store(StoreCategoryRequest $request)
 {
-    // 1. Convert the input name to a slug and merge it into the request data
-    $request->merge([
-        'slug' => Str::slug($request->name),
-    ]);
-
-    // 2. Validate both fields
-    $request->validate([
-        'name' => 'required|string|max:255|unique:categories,name',
-        'slug' => 'unique:categories,slug', // 👈 This catches "slug collisions" (like "Teddy Bear" vs "Teddy-Bear")
-    ], [
-        'name.unique' => 'This category name already exists! 🧸',
-        'slug.unique' => 'A category with a matching web link already exists (e.g. spaces vs hyphens)! 🧸',
-    ]);
-
-    // 3. Create the category (since it passed validation!)
-    Category::create([
-        'name' => $request->name,
-        'slug' => $request->slug, // Use the generated slug
-    ]);
+    Category::create($request->validated());
 
     return back()->with('success', 'New toy category added successfully! 🎉');
 }
 
-public function update(Request $request, Category $category)
+public function update(UpdateCategoryRequest $request, Category $category)
 {
-    // Generate slug before validation check
-    $request->merge([
-        'slug' => Str::slug($request->name),
-    ]);
-
-    $request->validate([
-        'name' => 'required|string|max:255',
-        // Ignore the current category's ID so it doesn't collide with itself
-        'slug' => [
-            'required',
-            Rule::unique('categories', 'slug')->ignore($category->id)
-        ],
-    ], [
-        'slug.unique' => 'This category name or slug is already in use by another category! 🧸',
-    ]);
-
-    $category->update([
-        'name' => $request->name,
-        'slug' => $request->slug,
-    ]);
+    $category->update($request->validated());
 
     return back()->with('success', 'Category updated successfully! 🎉');
 }

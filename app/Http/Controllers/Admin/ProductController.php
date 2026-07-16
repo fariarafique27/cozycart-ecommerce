@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -49,28 +50,15 @@ class ProductController extends Controller
     }
 
     // 3. Store a newly created product
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // 📷 Validates the file upload
-        ]);
+        $validated = $request->validated();
 
-        // Handle file uploading 🚚
         if ($request->hasFile('image')) {
-            // Saves file to storage/app/public/products and returns the path string
-            $path = $request->file('image')->store('products', 'public');
-            
-            // Inject image_path into our validated array for mass assignment
-            $validated['image_path'] = $path;
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
         }
 
         Product::create($validated);
-
         return redirect()->route('admin.products.index')->with('success', 'Plushie added successfully! 🧸');
     }
 
@@ -82,27 +70,15 @@ class ProductController extends Controller
     }
 
     // 5. Update the product details
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Validate incoming image file
-        ]);
+        $validated = $request->validated();
 
-        // Handle updating file upload 🚚
         if ($request->hasFile('image')) {
-            // Optional clean up: Delete the old image from server storage if a new one is uploaded
             if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-                \Storage::disk('public')->delete($product->image_path);
+                Storage::disk('public')->delete($product->image_path);
             }
-
-            // Store the fresh image
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image_path'] = $path;
+            $validated['image_path'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($validated);

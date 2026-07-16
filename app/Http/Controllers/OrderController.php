@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Requests\UpdateOrderStatusRequest;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Mail\OrderStatusChanged;
@@ -21,29 +21,25 @@ class OrderController extends Controller
         return view('orders.index', compact('orders'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
-        // The $order is already found by Laravel! 
-        // You don't need Order::findOrFail($id) anymore.
+        $newStatus = $request->validated()['status'];
 
-        $newStatus = $request->status;
-
-        // 🔒 1. Prevention Logic: Prevent changing back to 'pending'
+        // 🔒 1. Prevention Logic
         if ($order->status !== 'pending' && $newStatus === 'pending') {
             return back()->with('error', 'You cannot move an order back to pending!');
         }
 
         // 🔒 2. Notification Logic
         if ($order->status !== $newStatus && in_array($newStatus, ['delivered', 'cancelled'])) {
-            
             $order->update(['status' => $newStatus]);
 
             try {
-                Mail::to($order->customer_email)->send(new \App\Mail\OrderStatusChanged($order));
+                Mail::to($order->customer_email)->send(new OrderStatusChanged($order));
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("Failed to send status email: " . $e->getMessage());
+                Log::error("Failed to send status email: " . $e->getMessage());
             }
-            
+
             return back()->with('success', 'Order status updated and customer notified! 🧸');
         }
 
