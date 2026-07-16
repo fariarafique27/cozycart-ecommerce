@@ -34,31 +34,11 @@
                     @endif
                 @endauth
 
-                <a href="#products-showcase" 
+                <a href={{route('shop.index') }}
                 class="w-full sm:w-auto px-8 py-4 text-base font-medium text-stone-700 bg-white hover:bg-stone-50 border border-stone-200 rounded-xl transition text-center cursor-pointer">
                     View Marketplace
                 </a>
 
-            </div>
-        </div>
-    </section>
-
-    <section id="products-showcase" class="scroll-mt-16 bg-white border-t border-stone-100 py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <div class="mb-12 text-center sm:text-left">
-                <h2 class="text-3xl font-black text-stone-900 tracking-tight">Our Softest Additions 🧸</h2>
-                <p class="text-stone-500 mt-2">Fresh plushies hot out of the workshop and ready to find a home.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse($products as $product)
-                    @include('components.product-card', ['product' => $product])
-                @empty
-                    <div class="col-span-full text-center py-12 bg-stone-50 rounded-2xl border border-dashed border-stone-200">
-                        <p class="text-stone-400 italic text-sm">No cuddle companions are in the showcase yet.</p>
-                    </div>
-                @endforelse
             </div>
         </div>
     </section>
