@@ -1,12 +1,8 @@
 <x-layout theme="admin">
-    <!-- Side Drawer Container (Sits on top of everything) -->
     <div id="order-drawer" class="fixed inset-0 z-50 invisible transition-opacity duration-300" role="dialog" aria-modal="true">
-        <!-- Backdrop Backdrop Shadow -->
         <div id="drawer-backdrop" class="fixed inset-0 bg-stone-900/40 opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
         
-        <!-- Sliding Content Panel -->
         <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col translate-x-full transition-transform duration-300 ease-out">
-            <!-- Drawer Header -->
             <div class="p-6 border-b border-stone-100 flex items-center justify-between bg-stone-50">
                 <div>
                     <h3 class="text-base font-bold text-stone-900" id="drawer-title">Order Details</h3>
@@ -17,25 +13,20 @@
                 </button>
             </div>
 
-            <!-- Drawer Body (Scrollable items container) -->
             <div class="flex-1 overflow-y-auto p-6 space-y-6">
-                <!-- Customer Details Card -->
                 <div class="bg-stone-50 border border-stone-100 p-4 rounded-xl">
                     <h4 class="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-2">Customer Info</h4>
                     <p class="text-sm font-bold text-stone-900" id="drawer-customer-name">-</p>
                     <p class="text-xs text-stone-500" id="drawer-customer-email">-</p>
                 </div>
 
-                <!-- Products List -->
                 <div>
                     <h4 class="text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-3">Items Purchased</h4>
                     <div id="drawer-items-list" class="divide-y divide-stone-100">
-                        <!-- Dynamic items are injected here via JS -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- Drawer Footer (Total Price Summary) -->
             <div class="p-6 border-t border-stone-100 bg-stone-50 flex items-center justify-between">
                 <span class="text-xs font-bold text-stone-500 uppercase">Total Amount:</span>
                 <span id="drawer-total" class="text-xl font-black text-pink-600">$0.00</span>
@@ -43,15 +34,12 @@
         </div>
     </div>
 
-    <!-- MAIN ANALYTICS VIEW -->
     <div class="space-y-8">
-        <!-- Header -->
         <div>
             <h1 class="text-2xl font-bold text-stone-900">CozyCart Stats & Analytics 📈</h1>
             <p class="text-stone-500 text-sm">Real-time overview of your store's sales metrics and order fulfillment.</p>
         </div>
 
-        <!-- 💰 Financial Overview Cards Row -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs">
                 <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Today's Revenue</p>
@@ -71,7 +59,6 @@
             </div>
         </div>
 
-        <!-- 📦 Fulfillment Counters -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-xs flex items-center justify-between">
                 <div>
@@ -96,7 +83,6 @@
             </div>
         </div>
 
-        <!-- 📋 Orders List & Status Update Tool -->
         <div class="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-xs">
             <div class="p-6 border-b border-stone-100">
                 <h2 class="text-lg font-bold text-stone-900">Recent Transactions Log</h2>
@@ -135,7 +121,6 @@
                                     </form>
                                 </td>
                                 <td class="p-4 text-right">
-                                    <!-- 🔎 Button gathers product JSON payload dynamically -->
                                     <button 
                                         onclick="openDrawer({{ json_encode([
                                             'id' => $order->id,
@@ -153,11 +138,10 @@
                                                 ];
                                             })
                                         ]) }})"
-                                         class="px-3 py-1.5 border border-stone-200 hover:border-stone-400 hover:bg-stone-50 text-stone-700 transition rounded-lg text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
-                                         >
-                                        View Details 
+                                        class="px-3 py-1.5 border border-stone-200 hover:border-stone-400 hover:bg-stone-50 text-stone-700 transition rounded-lg text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
+                                    >
+                                        View Details
                                     </button>
-
                                 </td>
                             </tr>
                         @empty
@@ -168,15 +152,17 @@
                     </tbody>
                 </table>
             </div>
-            @if($orders->hasPages())
-                <div class="p-4 border-t border-stone-100">
+        </div>
+
+        @if($orders->hasPages())
+            <div class="mt-8 flex justify-center">
+                <div class="inline-flex items-center rounded-xl bg-white p-1 border border-stone-100 shadow-xs">
                     {{ $orders->links() }}
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
     </div>
 
-    <!-- JavaScript Drawer Animations & Template Engine -->
     <script>
         const drawer = document.getElementById('order-drawer');
         const backdrop = document.getElementById('drawer-backdrop');
