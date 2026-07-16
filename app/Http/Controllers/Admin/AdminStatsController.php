@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class AdminStatsController extends Controller
 {
@@ -39,7 +40,7 @@ class AdminStatsController extends Controller
         ));
     }
 
-    public function updateStatus(\Illuminate\Http\Request $request, Order $order)
+    public function updateStatus(Request $request, Order $order)
     {
         $request->validate(['status' => 'required|in:pending,delivered,cancelled']);
         $order->update(['status' => $request->status]);
